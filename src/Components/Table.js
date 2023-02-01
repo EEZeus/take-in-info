@@ -1,10 +1,75 @@
-import React from 'react'
-import Styles from 'Table.module.css'
+import * as React from 'react';
+import Styles from './Table.module.css'
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { useSelector } from 'react-redux';
 
-const Table = ()=>{
-    return<div>
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
 
-    </div>
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
+
+function createData(name, symbol, currentPrice, marketCapRank) {
+    return { name, symbol, currentPrice, marketCapRank };
 }
 
-export default Table;
+const CustomizedTables = () => {
+    const Data = useSelector(state => state.Fetch.data)
+
+    const rows = [];
+
+    for (let item of Data) {
+        const symbol = <span><img src={item.image} className={Styles.symbol} alt='icon'/>{item.symbol}</span>
+        rows.push(createData(item.name, symbol, item.current_price, item.market_cap_rank))
+    }
+
+    console.log(Data)
+    return (
+        <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 400 }} align='center' aria-label="customized table">
+                <TableHead>
+                    <TableRow>
+                        <StyledTableCell>Name</StyledTableCell>
+                        <StyledTableCell align="center">Symbol</StyledTableCell>
+                        <StyledTableCell align="center">Current Price&nbsp;($)</StyledTableCell>
+                        <StyledTableCell align="center">Market Cap Rank</StyledTableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {rows.map((row) => (
+                        <StyledTableRow key={row.name}>
+                            <StyledTableCell component="th" scope="row">
+                                {row.name}
+                            </StyledTableCell>
+                            <StyledTableCell align="center">{row.symbol}</StyledTableCell>
+                            <StyledTableCell align="center">{row.currentPrice}</StyledTableCell>
+                            <StyledTableCell align="center">{row.marketCapRank}</StyledTableCell>
+                        </StyledTableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+}
+export default CustomizedTables;
