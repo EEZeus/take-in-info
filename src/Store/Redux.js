@@ -1,6 +1,6 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 
-const initialState = { data: [] }
+const initialState = { data: [],currentId:null }
 
 const fetchSlice = createSlice({
     name: 'Fetch',
@@ -8,6 +8,9 @@ const fetchSlice = createSlice({
     reducers: {
         fetchState(state, action) {
             state.data = action.payload.data
+        },
+        pickId(state,action){
+            state.currentId = action.payload.currentId
         }
     }
 })
@@ -17,5 +20,5 @@ const store = configureStore({
         Fetch: fetchSlice.reducer,
     },
 });
-export const fetchAction = fetchSlice.actions.fetchState;
+export const Actions = fetchSlice.actions;
 export default store;

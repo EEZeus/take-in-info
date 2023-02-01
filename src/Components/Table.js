@@ -9,6 +9,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import { Actions } from '../Store/Redux';
+import { Link } from 'react-router-dom'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -16,7 +19,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         color: theme.palette.common.white,
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
+        fontSize: 16,
     },
 }));
 
@@ -35,21 +38,21 @@ function createData(name, symbol, currentPrice, marketCapRank) {
 }
 
 const CustomizedTables = () => {
+    const dispatch = useDispatch()
+
     const Data = useSelector(state => state.Fetch.data)
 
     const rows = [];
 
     for (let item of Data) {
-        const symbol = <span><img src={item.image} className={Styles.symbol} alt='icon'/>{item.symbol}</span>
+        const symbol = <span><img src={item.image} className={Styles.symbol} alt='icon' />{item.symbol}</span>
         rows.push(createData(item.name, symbol, item.current_price, item.market_cap_rank))
     }
-
-    console.log(Data)
     return (
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 400 }} align='center' aria-label="customized table">
                 <TableHead>
-                    <TableRow>
+                    <TableRow >
                         <StyledTableCell>Name</StyledTableCell>
                         <StyledTableCell align="center">Symbol</StyledTableCell>
                         <StyledTableCell align="center">Current Price&nbsp;($)</StyledTableCell>
@@ -59,17 +62,27 @@ const CustomizedTables = () => {
                 <TableBody>
                     {rows.map((row) => (
                         <StyledTableRow key={row.name}>
+
                             <StyledTableCell component="th" scope="row">
-                                {row.name}
+                                <Link className={Styles.link} to="/details"
+                                    onClick={() => {
+                                        dispatch(Actions.pickId({ currentId: row.marketCapRank - 1 }))
+                                    }}>
+                                    {row.name}
+                                </Link>
                             </StyledTableCell>
-                            <StyledTableCell align="center">{row.symbol}</StyledTableCell>
+                            <StyledTableCell align="center">
+                                <Link className={Styles.link} to="/details">
+                                    {row.symbol}
+                                </Link>
+                            </StyledTableCell>
                             <StyledTableCell align="center">{row.currentPrice}</StyledTableCell>
                             <StyledTableCell align="center">{row.marketCapRank}</StyledTableCell>
                         </StyledTableRow>
                     ))}
                 </TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer >
     );
 }
 export default CustomizedTables;
