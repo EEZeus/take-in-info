@@ -1,4 +1,15 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
+import storage from 'redux-persist/lib/storage';
+import { combineReducers } from 'redux';
+import {
+    persistReducer,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+} from 'redux-persist';
 
 const initialState = { data: [],currentId:null }
 
@@ -15,10 +26,23 @@ const fetchSlice = createSlice({
     }
 })
 
+const persistConfig = {
+    key: 'Fetch',
+    storage,
+};
+
+const reducers = combineReducers({ Fetch: fetchSlice.reducer });
+const persistedReducer = persistReducer(persistConfig, reducers);
+
+
 const store = configureStore({
-    reducer: {
-        Fetch: fetchSlice.reducer,
-    },
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }),
 });
 export const Actions = fetchSlice.actions;
 export default store;
