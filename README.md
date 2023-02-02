@@ -1,3 +1,9 @@
+### how run project
+
+    1:clone the project
+    2:run command 'npm install'
+    3:run command 'npm start'
+
 ### Used libraries
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
