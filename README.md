@@ -1,4 +1,4 @@
-### how run project
+### how to run project
 
     1:clone the project
     2:run command 'npm install'
